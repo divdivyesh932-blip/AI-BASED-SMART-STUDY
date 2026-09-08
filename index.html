@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Study Assistant — AI Academic Workload & Schedule Manager</title>
+  <meta name="description" content="AI-powered mobile and web application designed for college students to manage academic workload, prioritize tasks with AI matrix scoring, generate personalized study schedules, understand difficult concepts, and track progress.">
+  <meta name="theme-color" content="#6366F1">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Layout Container (Can toggle to phone frame mode) -->
+  <div id="app-root-frame" class="app-layout">
+
+    <!-- ==========================================================================
+         SIDEBAR NAVIGATION (DESKTOP)
+         ========================================================================== -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>Smart Study</h1>
+          <span class="brand-tag">AI Academic OS</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-link active" data-tab-target="home" id="nav-btn-home">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </span>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-link" data-tab-target="planner" id="nav-btn-planner">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </span>
+          <span>AI Planner</span>
+          <span class="nav-pill-badge">Adaptive</span>
+        </button>
+
+        <button class="nav-link" data-tab-target="tasks" id="nav-btn-tasks">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          </span>
+          <span>Prioritizer</span>
+          <span class="nav-pill-badge" id="sidebar-high-task-badge">3 High</span>
+        </button>
+
+        <button class="nav-link" data-tab-target="aiHelper" id="nav-btn-aiHelper">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path><circle cx="12" cy="12" r="4"></circle></svg>
+          </span>
+          <span>AI Concept Helper</span>
+        </button>
+
+        <button class="nav-link" data-tab-target="progress" id="nav-btn-progress">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </span>
+          <span>Progress & Streak</span>
+        </button>
+
+        <button class="nav-link" data-tab-target="profile" id="nav-btn-profile">
+          <span class="nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </span>
+          <span>Profile & Sem</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-dt-showcase" id="btn-open-design-thinking">
+          <span>💡</span>
+          <div>
+            <strong>Design Thinking</strong>
+            <div style="font-size:0.7rem; color:var(--text-muted);">Presentation Overview</div>
+          </div>
+        </button>
+
+        <div class="user-mini-card">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student Avatar" class="user-avatar-sm">
+          <div class="user-details-mini">
+            <div class="user-name-mini" id="sidebar-user-name">Alex Chen</div>
+            <div class="user-role-mini">B.Tech CSE • Sem 5</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================================================
+         MAIN WRAPPER (TOPBAR + VIEWS)
+         ========================================================================== -->
+    <div class="main-wrapper">
+
+      <!-- TOP STICKY NAVBAR -->
+      <header class="top-navbar">
+        <div class="nav-left-status">
+          <div class="student-greeting-pill">
+            <span class="pulse-dot-ai"></span>
+            <span>AI Coach Online</span>
+          </div>
+        </div>
+
+        <div class="nav-right-actions">
+          <div class="streak-pill-chip" title="Active Study Streak">
+            <span>🔥</span>
+            <span id="topbar-streak-val">7 Days</span>
+          </div>
+
+          <!-- Notification Bell -->
+          <button class="btn-icon-nav" id="btn-notif-bell" title="Smart Reminders">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notif-badge-pill" id="notif-badge-count">2</span>
+          </button>
+
+          <!-- Device Mode Switcher (Desktop vs Phone Viewport) -->
+          <button class="btn-icon-nav" id="btn-toggle-device-mode" title="Toggle Phone / Desktop Preview">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          </button>
+
+          <!-- Theme Toggle (Dark/Light) -->
+          <button class="btn-icon-nav" id="btn-toggle-theme" title="Toggle Dark/Light Mode">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- ======================================================================
+           VIEW 1: STUDENT DASHBOARD
+           ====================================================================== -->
+      <section class="app-view active" id="view-home">
+        <!-- Urgent Notification / Reminder Banner -->
+        <div id="dashboard-urgent-banner" style="display: none;"></div>
+
+        <!-- AI Coach Daily Motivational Quote -->
+        <div class="ai-quote-card">
+          <div class="quote-body">
+            <p class="quote-text" id="dash-quote-text">“Success in engineering isn't about pulling all-nighters; it's about 90 minutes of laser focus every single day.”</p>
+            <span class="quote-author" id="dash-quote-author">AI Study Coach • Daily Wisdom</span>
+          </div>
+          <button class="btn btn-sm btn-outline" id="btn-refresh-quote" title="Get New AI Advice">
+            🔄 New Advice
+          </button>
+        </div>
+
+        <!-- Top Metrics Row -->
+        <div class="dash-metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon-box m-icon-primary">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Study Hours Today</span>
+              <span class="metric-val" id="dash-hours-today">2.8 / 4.5h</span>
+              <span class="metric-sub">62% of daily target</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon-box m-icon-purple">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Tasks Completed</span>
+              <span class="metric-val" id="dash-tasks-ratio-text">1 / 7 Done</span>
+              <span class="metric-sub">3 High Priority Left</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon-box m-icon-amber">
+              <span style="font-size: 1.4rem;">🔥</span>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Study Streak</span>
+              <span class="metric-val" id="dash-quick-streak">7 Days</span>
+              <span class="metric-sub">+18.5 hrs logged this week</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon-box m-icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Target CGPA</span>
+              <span class="metric-val">9.2 / 10</span>
+              <span class="metric-sub">Syllabus 68% on track</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Main Layout -->
+        <div class="dash-columns-split">
+          <!-- Left Column: Today's Tasks & Actions -->
+          <div class="dash-col">
+            <div class="widget-card">
+              <div class="widget-header">
+                <h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  Today’s Study Agenda
+                </h3>
+                <button class="btn btn-sm btn-primary-glass" onclick="window.SSA_Prioritizer.openAddTaskModal()">+ Add Task</button>
+              </div>
+
+              <!-- List of tasks scheduled today -->
+              <div id="dash-today-tasks-list"></div>
+            </div>
+
+            <!-- Focus Session Quick Launcher -->
+            <div class="widget-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));">
+              <div class="widget-header">
+                <h3>🎯 Deep Focus Pomodoro Station</h3>
+                <span class="time-chip">25m Work • 5m Rest</span>
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+                Ready to study without distractions? Launch an AI-timed focus session for your highest priority task.
+              </p>
+              <button class="btn btn-primary" onclick="window.SSA_Dashboard.startFocusTimer('Operating Systems: Page Replacement Algorithms', 25)">
+                ⚡️ Launch 25-Min Focus Session
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Progress Ring & Deadlines -->
+          <div class="dash-col">
+            <!-- Progress Radial Gauge Widget -->
+            <div class="widget-card">
+              <div class="widget-header">
+                <h3>Daily Progress</h3>
+                <span class="category-chip">Target: 4.5h</span>
+              </div>
+              <div class="progress-ring-card-body">
+                <div class="ring-svg-wrap">
+                  <svg class="ring-svg" viewBox="0 0 100 100">
+                    <defs>
+                      <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#6366F1"/>
+                        <stop offset="100%" stop-color="#06B6D4"/>
+                      </linearGradient>
+                    </defs>
+                    <circle class="ring-bg-track" cx="50" cy="50" r="46"></circle>
+                    <circle id="dash-progress-ring-circle" class="ring-active-fill" cx="50" cy="50" r="46"></circle>
+                  </svg>
+                  <div class="ring-center-text" id="dash-progress-pct">62%</div>
+                </div>
+                <div class="ring-stats-info">
+                  <h4 id="dash-progress-hrs">2.8 / 4.5 hrs</h4>
+                  <p>1.7 hours left to hit today’s academic target. You're on track!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Deadlines Watchlist -->
+            <div class="widget-card">
+              <div class="widget-header">
+                <h3>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                  Upcoming Deadlines
+                </h3>
+                <span class="category-chip">Next 5 Days</span>
+              </div>
+              <div id="dash-deadlines-container"></div>
+            </div>
+
+            <!-- AI Priority Watchlist -->
+            <div class="widget-card">
+              <div class="widget-header">
+                <h3>🚨 Urgent Focus List</h3>
+                <span class="priority-pill pill-high">AI Ranked</span>
+              </div>
+              <div id="dash-priority-watchlist"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 2: AI PERSONALIZED STUDY PLANNER
+           ====================================================================== -->
+      <section class="app-view" id="view-planner">
+        <div class="planner-top-controls">
+          <div>
+            <h2 style="font-size: 1.4rem; font-weight: 800;">AI Personalized Study Planner</h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary);">
+              Dynamic schedule generated from your subject credits, upcoming deadlines & available study hours.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <!-- Simulate Missed Task (Adaptive AI Rebalancing) -->
+            <button class="btn btn-warning btn-sm" id="btn-simulate-missed-task" title="Simulate a missed study session for presentation">
+              <span>⚠️</span> Simulate Missed Task
+            </button>
+
+            <!-- Re-generate Schedule Wizard -->
+            <button class="btn btn-primary btn-sm" id="btn-open-planner-wizard">
+              <span>✨</span> Generate AI Plan
+            </button>
+
+            <!-- View Week vs Day -->
+            <div class="view-mode-toggle">
+              <button class="btn-toggle-view active" id="btn-view-week">Weekly Grid</button>
+              <button class="btn-toggle-view" id="btn-view-day">Daily Timeline</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day Selector Tabs -->
+        <div class="planner-day-tabs-scroll" id="planner-day-tabs" style="margin-bottom: 20px;"></div>
+
+        <!-- Weekly Grid / Daily Timeline Container -->
+        <div id="planner-grid-container"></div>
+
+        <!-- Subject Hour Allocation Distribution Summary -->
+        <div class="widget-card" style="margin-top: 24px;">
+          <div class="widget-header">
+            <h3>📊 Weekly Subject Time Allocation</h3>
+            <span class="category-chip">Target: 33 hrs total</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;">
+            AI algorithm automatically divides more hours to Hard subjects (DSA, OS) with approaching exams.
+          </p>
+          <div id="planner-subject-hours-bar"></div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3: SMART TASK PRIORITIZER
+           ====================================================================== -->
+      <section class="app-view" id="view-tasks">
+        <!-- Top AI Ranked Task Highlight Banner -->
+        <div id="top-priority-task-banner"></div>
+
+        <div class="tasks-header-bar">
+          <!-- Filters -->
+          <div class="tasks-filter-bar">
+            <button class="task-filter-btn active" data-filter="all">All Tasks</button>
+            <button class="task-filter-btn" data-filter="high">🔴 High Priority</button>
+            <button class="task-filter-btn" data-filter="medium">🟡 Medium</button>
+            <button class="task-filter-btn" data-filter="low">🟢 Low</button>
+            <button class="task-filter-btn" data-filter="pending">⏳ Pending</button>
+            <button class="task-filter-btn" data-filter="completed">✓ Completed</button>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="view-mode-toggle">
+              <button class="btn-toggle-view active" id="btn-view-list">📋 Ranked List</button>
+              <button class="btn-toggle-view" id="btn-view-matrix">🔲 Eisenhower Matrix</button>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-open-add-task">+ Add Task</button>
+          </div>
+        </div>
+
+        <!-- Tasks Counter Bar -->
+        <div style="display: flex; gap: 20px; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
+          <span>Total Tasks: <strong id="count-total-tasks" style="color:var(--text-primary)">7</strong></span>
+          <span>Completed: <strong id="count-completed-tasks" style="color:var(--accent-green)">1</strong></span>
+          <span>High Priority: <strong id="count-high-tasks" style="color:var(--accent-red)">3</strong></span>
+        </div>
+
+        <!-- Task Items Container -->
+        <div id="tasks-container"></div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 4: AI CONCEPT HELPER (ATHENA TUTOR)
+           ====================================================================== -->
+      <section class="app-view" id="view-aiHelper">
+        <div class="ai-tutor-container">
+          <div>
+            <h2 style="font-size: 1.4rem; font-weight: 800;">AI Concept Helper — Athena Mentor</h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary);">
+              Get instant simple explanations, intuitive analogies, exam cheat sheets, and practice quizzes for difficult college topics.
+            </p>
+          </div>
+
+          <!-- Preset Topics Chips -->
+          <div class="ai-preset-topics-bar" id="ai-preset-topics-container"></div>
+
+          <!-- Chat Window Card -->
+          <div class="ai-chat-card">
+            <div class="ai-chat-header">
+              <div class="ai-mentor-badge">
+                <div class="mentor-avatar">✨</div>
+                <div class="mentor-info">
+                  <h4>Athena — Academic AI Mentor</h4>
+                  <span>Online • Ready to explain any concept</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Mode Chips -->
+            <div class="ai-quick-options-row">
+              <button class="btn-ai-mode-chip" id="chip-ai-explain">💡 Explain Simply (ELI5)</button>
+              <button class="btn-ai-mode-chip" id="chip-ai-example">🔍 Give Example & Analogy</button>
+              <button class="btn-ai-mode-chip" id="chip-ai-summary">📝 Summary Cheat Sheet</button>
+              <button class="btn-ai-mode-chip" id="chip-ai-quiz">🧪 Quiz Me</button>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="ai-chat-messages-area" id="ai-chat-messages"></div>
+
+            <!-- Input Bar -->
+            <div class="ai-chat-input-bar">
+              <input type="text" class="ai-input-field" id="ai-prompt-input" placeholder="Type a concept (e.g. Virtual Memory, Dijkstra, Normalization, TCP)...">
+              <button class="btn btn-primary" id="btn-send-ai-prompt">
+                Ask AI
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 5: PROGRESS & STREAK TRACKER
+           ====================================================================== -->
+      <section class="app-view" id="view-progress">
+        <!-- Streak Hero Card -->
+        <div class="streak-card-showcase">
+          <div class="streak-left-hero">
+            <div class="streak-flame-icon">🔥</div>
+            <div class="streak-hero-info">
+              <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--accent-amber);">Active Streak</span>
+              <h3 id="streak-count-display">7 Days</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">Consistent study logged every day this week. You're in the top 5% of your class!</p>
+            </div>
+          </div>
+
+          <div class="streak-dots-row" id="streak-dots-row"></div>
+        </div>
+
+        <!-- Metrics Summary Cards -->
+        <div class="dash-metrics-grid" style="margin-bottom: 24px;">
+          <div class="metric-card">
+            <div class="metric-info">
+              <span class="metric-label">Completion Rate</span>
+              <span class="metric-val" id="metric-completion-rate">68%</span>
+              <span class="metric-sub">Syllabus on track</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <span class="metric-label">Study Hours Today</span>
+              <span class="metric-val" id="metric-hours-today">2.8 / 4.5h</span>
+              <span class="metric-sub">62% daily goal</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <span class="metric-label">Tasks Ratio</span>
+              <span class="metric-val" id="metric-tasks-ratio">1 done / 6 left</span>
+              <span class="metric-sub">3 High Priority</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <span class="metric-label">Total Productive Hours</span>
+              <span class="metric-val" id="metric-total-hours">142.5 hrs</span>
+              <span class="metric-sub">Semester 5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="progress-charts-grid">
+          <!-- Weekly Hours Chart -->
+          <div class="widget-card">
+            <div class="widget-header">
+              <h3>📈 Weekly Study Hours (Target vs Actual)</h3>
+              <span class="category-chip">Dashed line = Target</span>
+            </div>
+            <div class="chart-card-body" id="chart-weekly-hours"></div>
+          </div>
+
+          <!-- Subject Distribution Donut -->
+          <div class="widget-card">
+            <div class="widget-header">
+              <h3>🍩 Subject Distribution</h3>
+              <span class="category-chip">Time Spent</span>
+            </div>
+            <div class="donut-wrap-box">
+              <div id="chart-subject-donut"></div>
+              <div class="donut-legend-col" id="chart-subject-legend"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gamification Badges & Achievements -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <h3>🏆 Student Achievements & Milestones</h3>
+            <span class="category-chip">Gamified Progress</span>
+          </div>
+          <div class="achievements-grid" id="achievements-grid"></div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 6: STUDENT PROFILE & SETTINGS
+           ====================================================================== -->
+      <section class="app-view" id="view-profile">
+        <div class="profile-cards-grid">
+          <!-- Profile Card -->
+          <div class="profile-hero-card">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Alex Chen" class="profile-avatar-lg">
+            <h3 id="prof-name" style="font-size: 1.3rem; font-weight: 800;">Alex Chen</h3>
+            <p id="prof-college" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;">Institute of Engineering & Technology</p>
+            <p id="prof-major" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 20px;">B.Tech Computer Science • Sem 5</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 20px;">
+              <div class="metric-card" style="padding: 12px;">
+                <div class="metric-info">
+                  <span class="metric-label">Target CGPA</span>
+                  <span class="metric-val" id="prof-gpa" style="font-size: 1.1rem;">9.2 / 10</span>
+                </div>
+              </div>
+              <div class="metric-card" style="padding: 12px;">
+                <div class="metric-info">
+                  <span class="metric-label">Streak</span>
+                  <span class="metric-val" id="prof-streak" style="font-size: 1.1rem;">7 Days 🔥</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="width: 100%; text-align: left; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+              <span class="form-label" style="display: block; margin-bottom: 8px;">Presentation Demo Scenarios:</span>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-sm btn-outline" id="btn-scen-midterm">🚨 Load "Midterm Exam Crunch" Demo</button>
+                <button class="btn btn-sm btn-outline" id="btn-scen-placement">💼 Load "Placement Season" Demo</button>
+                <button class="btn btn-sm btn-ghost" id="btn-reset-prototype" style="color: var(--accent-red);">🔄 Reset Prototype to Default Data</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Enrolled Subjects -->
+          <div class="widget-card">
+            <div class="widget-header">
+              <h3>📚 Enrolled Subjects & Credit Workload</h3>
+              <span class="category-chip">Semester 5 (18 Credits)</span>
+            </div>
+            <div id="prof-enrolled-subjects"></div>
+          </div>
+        </div>
+      </section>
+
+    </div> <!-- End Main Wrapper -->
+
+    <!-- ==========================================================================
+         MOBILE BOTTOM NAVIGATION (VISIBLE ON PHONES / MOBILE FRAME)
+         ========================================================================== -->
+    <nav class="mobile-bottom-nav">
+      <button class="mob-nav-item active" data-tab-target="home">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <span>Home</span>
+      </button>
+
+      <button class="mob-nav-item" data-tab-target="planner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+        <span>Planner</span>
+      </button>
+
+      <button class="mob-nav-item" data-tab-target="tasks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Tasks</span>
+      </button>
+
+      <button class="mob-nav-item" data-tab-target="aiHelper">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path></svg>
+        <span>AI Helper</span>
+      </button>
+
+      <button class="mob-nav-item" data-tab-target="progress">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line></svg>
+        <span>Progress</span>
+      </button>
+    </nav>
+
+  </div> <!-- End App Root Frame -->
+
+  <!-- ==========================================================================
+       MODALS & DRAWERS
+       ========================================================================== -->
+
+  <!-- 1. NOTIFICATIONS DRAWER -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  <div class="notifications-drawer" id="notifications-drawer">
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.1rem;">🔔</span>
+        <h3 style="font-size: 1rem; font-weight: 700;">Smart Reminders</h3>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-xs btn-ghost" id="btn-mark-all-read">Mark all read</button>
+        <button class="btn-icon-subtle" id="btn-close-drawer">✕</button>
+      </div>
+    </div>
+    <div class="drawer-items-list" id="notif-items-list"></div>
+  </div>
+
+  <!-- 2. ADD TASK MODAL (WITH LIVE AI SCORE PREVIEW) -->
+  <div class="modal-overlay" id="modal-add-task">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>✨ Add New Academic Task</h3>
+        <button class="btn-close-modal" id="btn-close-add-task">✕</button>
+      </div>
+
+      <form id="form-add-task">
+        <div class="form-group">
+          <label class="form-label">Task Title / Assignment Name</label>
+          <input type="text" class="form-input" id="task-title-input" placeholder="e.g. Implement Dijkstra Algorithm in C++" required>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select class="form-select" id="task-subject-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="task-category-input">
+              <option value="Lab Work">Lab Work</option>
+              <option value="Assignment">Assignment</option>
+              <option value="Exam Prep">Exam Prep</option>
+              <option value="Project">Project</option>
+              <option value="Placement Prep">Placement Prep</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Difficulty Level</label>
+            <select class="form-select" id="task-difficulty-input">
+              <option value="Hard">Hard (Requires deep focus)</option>
+              <option value="Medium" selected>Medium (Standard)</option>
+              <option value="Easy">Easy (Light review)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Time (mins)</label>
+            <input type="number" class="form-input" id="task-time-input" value="60" min="15" max="300" step="15">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deadline (Days Left)</label>
+          <input type="number" class="form-input" id="task-days-input" value="2" min="0.5" max="30" step="0.5">
+        </div>
+
+        <!-- Live AI Priority Preview Card -->
+        <div class="form-group">
+          <label class="form-label">Live AI Priority Prediction</label>
+          <div id="task-ai-preview-box" class="widget-card" style="padding: 12px; background: var(--bg-surface-elevated);"></div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+          <button type="button" class="btn btn-outline" onclick="window.SSA_Prioritizer.closeAddTaskModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Prioritize with AI</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. POMODORO FOCUS TIMER MODAL -->
+  <div class="modal-overlay" id="modal-focus-timer">
+    <div class="modal-dialog" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <h3 style="display: flex; align-items: center; gap: 8px;">🎯 Deep Focus Session</h3>
+        <button class="btn-close-modal" id="btn-close-timer-modal">✕</button>
+      </div>
+
+      <div style="margin: 10px 0 20px 0;">
+        <h4 id="timer-task-name" style="font-size: 1.1rem; color: var(--primary);">Academic Focus</h4>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Put phone away. One single task until the chime rings.</p>
+      </div>
+
+      <!-- Circular Countdown Timer -->
+      <div style="position: relative; width: 200px; height: 200px; margin: 0 auto 24px auto;">
+        <svg viewBox="0 0 180 180" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+          <circle cx="90" cy="90" r="80" fill="none" stroke="var(--border-subtle)" stroke-width="8"></circle>
+          <circle id="timer-svg-circle" cx="90" cy="90" r="80" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round"></circle>
+        </svg>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <div id="timer-countdown-text" style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;">25:00</div>
+          <span style="font-size: 0.72rem; color: var(--accent-green); font-weight: 600; text-transform: uppercase;">Focus Mode Active</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn btn-primary" id="btn-timer-toggle">Pause</button>
+        <button class="btn btn-outline" id="btn-timer-reset">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ADAPTIVE STUDY PLAN REBALANCING MODAL (FEATURE 7 DEMO) -->
+  <div class="modal-overlay" id="modal-adaptive-rebalance">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="color: var(--accent-amber);">⚠️ Adaptive AI Schedule Rebalancing</h3>
+        <button class="btn-close-modal" id="btn-close-adaptive">✕</button>
+      </div>
+
+      <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-amber); text-transform: uppercase;">Missed Task Detected</div>
+        <h4 id="adaptive-missed-task-name" style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;">Operating Systems: Page Replacement Algorithms (1.5 hrs)</h4>
+        <p id="adaptive-missed-subject" style="font-size: 0.8rem; color: var(--text-secondary);">CS502 • Exam in 3 Days</p>
+      </div>
+
+      <p style="font-size: 0.88rem; color: var(--text-primary); margin-bottom: 14px;">
+        The AI engine analyzed your remaining deadlines and energy levels. Choose how you want Athena to automatically adapt your study schedule:
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+        <div class="widget-card" style="padding: 14px; cursor: pointer; border-color: var(--primary);" onclick="window.SSA_Planner.applyAdaptiveRebalance(1)">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Option A: Shift to Tonight (21:30 - 23:00)</strong>
+            <span class="badge-status-pill">AI Recommended</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Inserts a 90m slot tonight by replacing non-urgent exploratory reading.
+          </p>
+        </div>
+
+        <div class="widget-card" style="padding: 14px; cursor: pointer;" onclick="window.SSA_Planner.applyAdaptiveRebalance(2)">
+          <strong>Option B: Split into two 45-min slots</strong>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Distribute 45m on Tuesday evening & 45m on Wednesday evening.
+          </p>
+        </div>
+
+        <div class="widget-card" style="padding: 14px; cursor: pointer;" onclick="window.SSA_Planner.applyAdaptiveRebalance(3)">
+          <strong>Option C: Add to Saturday Morning</strong>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Move 1.5h to Saturday 08:30 AM block.
+          </p>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn btn-outline" onclick="window.SSA_Planner.closeAdaptiveModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. AI PLANNER WIZARD MODAL -->
+  <div class="modal-overlay" id="modal-planner-wizard">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>✨ AI Personalized Schedule Generator</h3>
+        <button class="btn-close-modal" id="btn-close-planner-wizard">✕</button>
+      </div>
+
+      <form id="form-planner-wizard">
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Configure your available study hours and priority areas. The AI algorithm will automatically divide study blocks among your 6 subjects.
+        </p>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Weekday Study Hours / Day</label>
+            <input type="number" class="form-input" id="wizard-weekday-hours" value="4.5" min="1" max="10" step="0.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Weekend Study Hours / Day</label>
+            <input type="number" class="form-input" id="wizard-weekend-hours" value="6.5" min="2" max="14" step="0.5">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Highest Priority Focus Subject</label>
+          <select class="form-select" id="wizard-focus-subject">
+            <option value="all">Balanced (Divide automatically by AI)</option>
+            <option value="cs502">Operating Systems (Approaching Midterm)</option>
+            <option value="cs501">Data Structures & Algorithms (Lab Work)</option>
+            <option value="cs503">Database Management Systems</option>
+            <option value="prep01">Placement & Aptitude Prep</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Preferred Peak Focus Time</label>
+          <select class="form-select">
+            <option value="evening">Evening (17:00 - 21:00) — Best for Deep Work</option>
+            <option value="morning">Morning (07:00 - 10:00)</option>
+            <option value="night">Night Owl (21:00 - 01:00)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+          <button type="button" class="btn btn-outline" onclick="window.SSA_Planner.closeGenerateWizard()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-wizard-submit">Generate Personalized Plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. RESCHEDULE SLOT MODAL -->
+  <div class="modal-overlay" id="modal-reschedule-slot">
+    <div class="modal-dialog" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3>⇄ Reschedule Study Slot</h3>
+        <button class="btn-close-modal" id="btn-close-reschedule">✕</button>
+      </div>
+      <div>
+        <h4 id="reschedule-slot-title" style="font-size: 1rem; color: var(--primary); margin-bottom: 4px;"></h4>
+        <p id="reschedule-slot-current" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;"></p>
+        <input type="hidden" id="reschedule-slot-id">
+        <input type="hidden" id="reschedule-day-from">
+
+        <div class="form-group">
+          <label class="form-label">Move to Day</label>
+          <select class="form-select" id="reschedule-target-day">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">New Time Slot</label>
+          <input type="text" class="form-input" id="reschedule-target-time" value="18:00 - 19:30">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+          <button class="btn btn-outline" onclick="window.SSA_Planner.closeRescheduleModal()">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-reschedule">Confirm Move</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. DESIGN THINKING SHOWCASE MODAL -->
+  <div class="modal-overlay" id="modal-design-thinking">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.3rem;">💡</span>
+          <h3>Design Thinking Project Showcase</h3>
+        </div>
+        <button class="btn-close-modal" id="btn-close-dt-modal">✕</button>
+      </div>
+
+      <div style="font-size: 0.9rem; line-height: 1.5; color: var(--text-primary); display: flex; flex-direction: column; gap: 16px;">
+        <div class="widget-card" style="border-left: 4px solid var(--accent-pink);">
+          <strong style="color: var(--accent-pink);">1. EMPATHIZE</strong>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+            College engineering students face cognitive overload: 6+ concurrent subjects, weekly lab records, surprise quizzes, semester exams, and placement prep. Students struggle with procrastination and panic-cramming.
+          </p>
+        </div>
+
+        <div class="widget-card" style="border-left: 4px solid var(--accent-amber);">
+          <strong style="color: var(--accent-amber);">2. DEFINE</strong>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+            Existing tools (Google Calendar, To-Do lists) are static and rigid. When a student misses one scheduled study block, the entire timetable collapses with no dynamic recovery or concept assistance.
+          </p>
+        </div>
+
+        <div class="widget-card" style="border-left: 4px solid var(--primary);">
+          <strong style="color: var(--primary);">3. IDEATE</strong>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+            Combine AI algorithmic prioritization (urgency × difficulty matrix) + automatic schedule division + adaptive missed-task rebalancing + an in-app AI concept explainer (Athena).
+          </p>
+        </div>
+
+        <div class="widget-card" style="border-left: 4px solid var(--accent-cyan);">
+          <strong style="color: var(--accent-cyan);">4. PROTOTYPE (This Web/Mobile App)</strong>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+            Built with 7 functional modules: Live Dashboard, AI Planner, Task Matrix, Athena Concept Explainer, Gamified Streak Tracker, Smart Reminders, and 1-Click Adaptive Rebalance.
+          </p>
+        </div>
+
+        <div class="widget-card" style="border-left: 4px solid var(--accent-green);">
+          <strong style="color: var(--accent-green);">5. TEST & DEMONSTRATE</strong>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 4px;">
+            Demonstrate on stage: Click <em>"Simulate Missed Task"</em> to see real-time AI schedule adaptation, ask Athena to explain <em>"Virtual Memory"</em> in ELI5 mode, and toggle the mobile frame!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST NOTIFICATION -->
+  <div id="app-toast" class="app-toast"></div>
+
+  <!-- SCRIPT FILES (ORDER MATTERS) -->
+  <script src="data/initialData.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/prioritizer.js"></script>
+  <script src="js/planner.js"></script>
+  <script src="js/aiHelper.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

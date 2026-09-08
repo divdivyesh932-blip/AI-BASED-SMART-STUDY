@@ -1,0 +1,16 @@
+# Operating System & IDE files
+.DS_Store
+Thumbs.db
+*.log
+
+# Temporary screenshots (preserve documentation assets if needed)
+desktop_dashboard.png
+planner_screenshot.png
+tasks_screenshot.png
+progress_screenshot.png
+ai_helper_screenshot.png
+screenshot.png
+
+# Local environment
+.env
+.agents/
